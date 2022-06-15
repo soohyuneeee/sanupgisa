@@ -28,8 +28,8 @@ try {
 	
 	switch(mode) {
 	case "insert":
-																											//2022-04-06 to_date()
-		sql = "insert into member_tbl_02 values("+custno+", '"+custname+"', '"+phone+"', '"+address+"', TO_DATE('"+joindate+"', 'yyyy-MM-dd'), '"+grade+"', '"+city+"')";
+																											
+		sql = "insert into member_tbl_02 values("+custno+", '"+custname+"', '"+phone+"', '"+address+"', TO_DATE('"+joindate+"', 'yyyy-mm-dd'), '"+grade+"', '"+city+"')";
 		stmt.executeUpdate(sql);
 %>
 		<jsp:forward page="join.jsp"></jsp:forward>

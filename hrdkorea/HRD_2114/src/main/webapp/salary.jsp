@@ -6,36 +6,39 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>list</title>
+<title>salary</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <jsp:include page="header.jsp"/>
 
 <section>
-<h2><b>회원목록조회/수정</b></h2><br>
-<form>
+<h2 ><b>회원매출조회</b></h2><br>
+
+<form name="frm">
 	<table>
 		<tr>
 			<td>회원번호</td>
 			<td>회원성명</td>
-			<td>회원번호</td>
-			<td>전화번호</td>			
-			<td>주소</td>
-			<td>가입일자</td>
 			<td>고객등급</td>
-			<td>거주지역</td>
+			<td>매출</td>
 		</tr>
 <%
 request.setCharacterEncoding("UTF-8");
 Connection conn = null;
 Statement stmt = null;
-String grade="";
+String grade = "";
+
 try {
-	conn = Util.getConnection();
-	stmt = conn.createStatement();
-	String sql = "select * from member_tbl_02 order by custno";
+	conn=Util.getConnection();//디비 연결
+  stmt=conn.createStatement();//sql 실행하기 위한 변수
+	String sql = "select me.custno, me.custname, me.grade, sum(mo.price) as price " +
+				"from member_tbl_02 me, money_tbl_02 mo " +
+				"where me.custno=mo.custno " +
+				"group by me.custno ,me.custname, me.grade " +
+				"order by sum(mo.price) desc";
 	ResultSet rs = stmt.executeQuery(sql);
+	
 	while(rs.next()) {
 		grade = rs.getString("grade");
 		switch(grade) {
@@ -49,25 +52,23 @@ try {
 			grade = "직원";
 			break;
 		}
+
 %>
 		<tr>
-			<td><a href="modify.jsp?mod_custno=<%=rs.getString("custno") %>"><%=rs.getString("custno") %></a></td>
 			<td><%=rs.getString("custno") %></td>
 			<td><%=rs.getString("custname") %></td>
-			<td><%=rs.getString("phone") %></td>
-			<td><%=rs.getString("address") %></td>
-			<td><%=rs.getDate("joindate") %></td>
 			<td><%=grade %></td>
-			<td><%=rs.getString("city") %></td>
+			<td><%=rs.getString("price") %></td>
 		</tr>
 <%
 	}
 } catch(Exception e) {
-	e.printStackTrace();
+	e.printStackTrace(); 
 }
 %>
 	</table>
 </form>
+
 </section>
 
 <jsp:include page="footer.jsp"/>
